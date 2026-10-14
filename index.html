@@ -606,6 +606,40 @@
         }
       }
     </style>
+
+    <!-- META PIXEL: PAGE VIEW -->
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = true;
+        n.version = "2.0";
+        n.queue = [];
+
+        t = b.createElement(e);
+        t.async = true;
+        t.src = v;
+
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
+
+      fbq("init", "1102910598894467");
+      fbq("track", "PageView");
+    </script>
+    <!-- END META PIXEL -->
   </head>
   <body>
     <header>
@@ -620,11 +654,12 @@
         </nav>
         <a
           class="nav-cta"
-          href="https://wa.me/6287858342866?text=Halo%20Dieng%20Premio%2C%20saya%20ingin%20booking%20paket%20wisata."
+          href="https://wa.me/6287858342866?text=Halo%20Dieng%20Premio%2C%20saya%20ingin%20sewa%20jeep%20Dieng."
           target="_blank"
           rel="noopener"
-          >💬 Booking Paket 2D1N →</a
         >
+          💬 SEWA JEEP ONLY →
+        </a>
       </div>
     </header>
 
@@ -640,16 +675,7 @@
               nikmati perjalanan Dieng dengan layanan yang nyaman dan
               profesional.
             </p>
-            <div class="hero-buttons">
-              <a
-                class="btn"
-                href="https://wa.me/6287858342866?text=Halo%20Dieng%20Premio%2C%20saya%20ingin%20booking%20paket%202D1N%20untuk%202%20orang."
-                target="_blank"
-                rel="noopener"
-                >📱 Booking 2D1N untuk 2 orang</a
-              >
-              <a class="btn alt" href="#paket">Lihat Paket</a>
-            </div>
+            <div class="hero-buttons"></div>
           </div>
 
           <!-- HERO SLIDESHOW   are_d QEDEV  -->
@@ -1207,6 +1233,54 @@
           },
           3500 + cardIndex * 300,
         );
+      });
+    </script>
+
+    <script>
+      document.addEventListener("click", function (event) {
+        const target = event.target;
+
+        if (!(target instanceof Element)) return;
+
+        const link = target.closest("a[href]");
+        if (!link) return;
+
+        let url;
+
+        try {
+          url = new URL(link.href);
+        } catch {
+          return;
+        }
+
+        const whatsappHosts = ["wa.me", "api.whatsapp.com", "web.whatsapp.com"];
+
+        if (!whatsappHosts.includes(url.hostname)) return;
+
+        if (typeof window.fbq !== "function") return;
+
+        let buttonName = "whatsapp_other";
+
+        if (link.classList.contains("float-wa")) {
+          buttonName = "floating_whatsapp";
+        } else if (link.classList.contains("nav-cta")) {
+          buttonName = "sewa_jeep";
+        } else if (link.closest(".card")) {
+          const people = link.closest(".card").querySelector(".people");
+
+          buttonName = people
+            ? "booking_paket_" +
+              people.textContent.trim().toLowerCase().replace(/\s+/g, "_")
+            : "booking_paket";
+        } else if (link.closest("#kontak")) {
+          buttonName = "chat_konsultasi";
+        } else if (link.closest("footer")) {
+          buttonName = "footer_whatsapp";
+        }
+
+        window.fbq("track", "Contact", {
+          button_name: buttonName,
+        });
       });
     </script>
   </body>
